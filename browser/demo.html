@@ -8,7 +8,7 @@
 </head>
 <body>
 <p>
-pairing parameter : BLS12_381
+pairing parameter : BLS12_381 hey
 library status <span name="status">initializing...</span>
 <div>group order : <span name="curveOrder">0</span></div>
 </p>
@@ -24,11 +24,14 @@ msg : <input type="text" name="msg" value=""><br>
 signature : <span name="signature"></span><br>
 verify : <span name="verifyResult"></span><br>
 </div>
+<button type="text" id="testBls" onclick="onClickGenerateMasterPrivateKey()">generate shared master key</button>
+<div>
+</div>
 <button type="text" id="testBls" onclick="onClickTestShare()">test sharing</button>
 <div>
-threshold(k)         : <input type="text" name="ss_k" value="3"><br>
-number of players(n) : <input type="text" name="ss_n" value="5"><br>
-master secret key : <span name="msk"></span><br>
+threshold(k)         : <input type="text" name="ss_k" value="2"><br>
+number of players(n) : <input type="text" name="ss_n" value="3"><br>
+master secret key : <input type="text"  name="msk"></span><br>
 master public key : <span name="mpk"></span><br>
 msg : <input type="text" name="msg2" value="abc"><br>
 signature : <span name="signature2"></span><br>
@@ -41,6 +44,7 @@ selected index of id : <span name="idxVec"></span><br>
 recover secret key : <span name="recoverSec"></span><br>
 recover public key : <span name="recoverPub"></span><br>
 recover signature : <span name="recoverSig"></span><br>
+
 </div>
 <hr>
 <button type="text" id="testMisc" onclick="onClickTestMisc()">test misc</button>

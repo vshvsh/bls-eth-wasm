@@ -90,15 +90,34 @@ function onClickTestMisc () {
   setText('secSerialize', sec.serializeToHexStr())
 }
 
+function onClickGenerateMasterPrivateKey() {
+	/*
+		setup master secret key
+	*/
+  let sk = new bls.SecretKey()
+  sk.setByCSPRNG()
+  setValue('msk', sk.serializeToHexStr())
+}
+
 function onClickTestShare () {
   let k = parseInt(getValue('ss_k'))
   let n = parseInt(getValue('ss_n'))
   let msg = getValue('msg2')
+  let primary_msk_hex = getValue('msk')
+  let primary_msk = new bls.SecretKey()
+  primary_msk.deserializeHexStr(primary_msk_hex)
+
   console.log('k = ' + k)
   console.log('n = ' + n)
   console.log('msg = ' + msg)
+  console.log('msk = ' + primary_msk.serializeToHexStr())
+
   if (n < k) {
     alert('err : n is smaller than k')
+    return
+  }
+  if (k < 1) {
+    alert('err : k is smaller than 1')
     return
   }
   let msk = []
@@ -109,9 +128,13 @@ function onClickTestShare () {
   let sigVec = []
 
 	/*
-		setup master secret key
+		setup master secret key vector
 	*/
-  for (let i = 0; i < k; i++) {
+  msk.push(primary_msk)
+  let primary_mpk = primary_msk.getPublicKey()
+  mpk.push(primary_mpk)
+
+  for (let i = 1; i < k; i++) {
     let sk = new bls.SecretKey()
     sk.setByCSPRNG()
     msk.push(sk)
@@ -119,7 +142,7 @@ function onClickTestShare () {
     let pk = sk.getPublicKey()
     mpk.push(pk)
   }
-  setText('msk', msk[0].serializeToHexStr())
+  setValue('msk', msk[0].serializeToHexStr())
   setText('mpk', mpk[0].serializeToHexStr())
   {
     let sig = msk[0].sign(msg)
@@ -133,6 +156,7 @@ function onClickTestShare () {
   for (let i = 0; i < n; i++) {
     let id = new bls.Id()
 //		blsIdSetInt(id, i + 1)
+    
     id.setByCSPRNG()
     idVec.push(id)
     let sk = new bls.SecretKey()
@@ -147,6 +171,8 @@ function onClickTestShare () {
     sigVec.push(sig)
     console.log(i + ' : verify msg : ' + pk.verify(sig, msg))
   }
+
+
 
   const o = document.getElementById('idlist')
   const ol = document.createElement('ol')
@@ -174,6 +200,7 @@ function onClickTestShare () {
   const subSecVec = []
   const subPubVec = []
   const subSigVec = []
+  const subIdVecAlternative = []
   for (let i = 0; i < idxVec.length; i++) {
     const idx = idxVec[i]
     subIdVec.push(idVec[idx])
@@ -198,5 +225,7 @@ function onClickTestShare () {
     s = sig.serializeToHexStr()
     s += s === getText('signature2') ? ' :ok' : ' :ng'
     setText('recoverSig', s)
+
+
   }
 }
